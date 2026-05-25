@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBT Portal - Ujian Online MS Office</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- ROOT CONTAINER FOR REACT APP -->
+    <div id="root" class="flex-grow flex flex-col"></div>
+
+    <!-- React and Babel CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- REACT APPLICATION CODE -->
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- DATABASE SOAL (50 Soal) ---
+        const SOAL_DATABASE = [
+            // === MICROSOFT WORD (1 - 17) ===
+            {
+                id: 1,
+                kategori: "MS Word",
+                soal: "Kombinasi tombol keyboard untuk membuat teks terpilih menjadi tebal (Bold) adalah...",
+                opsi: {
+                    A: "Ctrl + I",
+                    B: "Ctrl + U",
+                    C: "Ctrl + B",
+                    D: "Ctrl + C",
+                    E: "Ctrl + E"
+                },
+                kunci: "C",
+                pembahasan: "Ctrl + B digunakan untuk menebalkan teks (Bold). Ctrl + I untuk cetak miring (Italic), Ctrl + U untuk garis bawah (Underline), Ctrl + C untuk menyalin (Copy), dan Ctrl + E untuk rata tengah."
+            },
+            {
+                id: 2,
+                kategori: "MS Word",
+                soal: "Shortcut keyboard yang digunakan untuk menyelaraskan paragraf menjadi rata tengah (Center) adalah...",
+                opsi: {
+                    A: "Ctrl + L",
+                    B: "Ctrl + R",
+                    C: "Ctrl + J",
+                    D: "Ctrl + E",
+                    E: "Ctrl + T"
+                },
+                kunci: "D",
+                pembahasan: "Ctrl + E (Center) memposisikan paragraf di tengah halaman. Ctrl + L untuk kiri (Left), Ctrl + R untuk kanan (Right), dan Ctrl + J untuk rata kiri-kanan (Justify)."
+            },
+            {
+                id: 3,
+                kategori: "MS Word",
+                soal: "Fitur pada MS Word yang digunakan untuk membuat surat massal dengan data penerima yang berbeda-beda secara otomatis disebut...",
+                opsi: {
+                    A: "Track Changes",
+                    B: "Mail Merge",
+                    C: "SmartArt",
+                    D: "Table of Contents",
+                    E: "Page Setup"
+                },
+                kunci: "B",
+                pembahasan: "Mail Merge (Surat Masal) mempermudah pembuatan surat, label, atau sertifikat dalam jumlah banyak dengan menghubungkan dokumen utama ke sumber data eksternal."
+            },
+            {
+                id: 4,
+                kategori: "MS Word",
+                soal: "Tab menu utama yang digunakan untuk mengatur batas tepi halaman (Margin) dan orientasi kertas adalah...",
+                opsi: {
+                    A: "Home",
+                    B: "Insert",
+                    C: "Layout / Page Layout",
+                    D: "References",
+                    E: "Design"
+                },
+                kunci: "C",
+                pembahasan: "Tab Layout (atau Page Layout di versi lama) memuat semua pengaturan halaman seperti Margins, Orientation, Size, Columns, dan Breaks."
+            },
+            {
+                id: 5,
+                kategori: "MS Word",
+                soal: "Ekstensi format file default untuk dokumen yang disimpan pada Microsoft Word versi 2007 ke atas adalah...",
+                opsi: {
+                    A: ".doc",
+                    B: ".docx",
+                    C: ".txt",
+                    D: ".pdf",
+                    E: ".rtf"
+                },
+                kunci: "B",
+                pembahasan: ".docx merupakan format berbasis Open XML yang digunakan secara default sejak MS Word 2007 menggantikan format biner .doc sebelumnya."
+            },
+            {
+                id: 6,
+                kategori: "MS Word",
+                soal: "Shortcut keyboard untuk membatalkan tindakan atau perintah terakhir yang telah dilakukan (Undo) adalah...",
+                opsi: {
+                    A: "Ctrl + Y",
+                    B: "Ctrl + X",
+                    C: "Ctrl + V",
+                    D: "Ctrl + Z",
+                    E: "Ctrl + A"
+                },
+                kunci: "D",
+                pembahasan: "Ctrl + Z mengaktifkan perintah Undo. Ctrl + Y untuk Redo (mengulang aksi), Ctrl + X untuk memotong (Cut), dan Ctrl + V untuk menempel (Paste)."
+            },
+            {
+                id: 7,
+                kategori: "MS Word",
+                soal: "Untuk menyisipkan gambar, bentuk geometri, tabel, dan diagram, pengguna harus mengakses tab...",
+                opsi: {
+                    A: "Design",
+                    B: "View",
+                    C: "Home",
+                    D: "References",
+                    E: "Insert"
+                },
+                kunci: "E",
+                pembahasan: "Tab Insert berisi fungsionalitas untuk memasukkan berbagai objek visual luar ke dalam lembar dokumen."
+            },
+            {
+                id: 8,
+                kategori: "MS Word",
+                soal: "Untuk mengatur jarak spasi vertikal antar baris teks dalam satu paragraf, fitur yang digunakan adalah...",
+                opsi: {
+                    A: "Paragraph Alignment",
+                    B: "Line and Paragraph Spacing",
+                    C: "Indent Left",
+                    D: "Character Spacing",
+                    E: "Page Break"
+                },
+                kunci: "B",
+                pembahasan: "Line and Paragraph Spacing mengatur kelegaan baris kalimat agar dokumen lebih rapi dan nyaman dibaca (misal spasi 1.15, 1.5, atau 2.0)."
+            },
+            {
+                id: 9,
+                kategori: "MS Word",
+                soal: "Untuk menyalin teks tanpa menghapus teks aslinya, langkah kombinasi tombol cepat yang benar adalah...",
+                opsi: {
+                    A: "Ctrl + X lalu Ctrl + V",
+                    B: "Ctrl + C lalu Ctrl + V",
+                    C: "Ctrl + C lalu Ctrl + X",
+                    D: "Ctrl + V lalu Ctrl + C",
+                    E: "Ctrl + Z lalu Ctrl + Y"
+                },
+                kunci: "B",
+                pembahasan: "Ctrl + C menduplikasi (Copy) objek ke clipboard, kemudian Ctrl + V menempelkan (Paste) hasil duplikasi tersebut ke area tujuan."
+            },
+            {
+                id: 10,
+                kategori: "MS Word",
+                soal: "Jenis orientasi halaman tegak lurus secara vertikal pada lembar kerja Microsoft Word dinamakan...",
+                opsi: {
+                    A: "Landscape",
+                    B: "Gridlines",
+                    C: "Portrait",
+                    D: "Column",
+                    E: "Vertical Layout"
+                },
+                kunci: "C",
+                pembahasan: "Portrait menyusun halaman secara memanjang ke bawah (tegak), sedangkan Landscape memanjang ke samping (mendatar)."
+            },
+            {
+                id: 11,
+                kategori: "MS Word",
+                soal: "Tombol pada keyboard yang digunakan untuk menghapus satu karakter di sebelah kiri kursor adalah...",
+                opsi: {
+                    A: "Delete",
+                    B: "Backspace",
+                    C: "Shift",
+                    D: "Tab",
+                    E: "End"
+                },
+                kunci: "B",
+                pembahasan: "Backspace menghapus karakter ke arah kiri/belakang, sedangkan tombol Delete menghapus karakter di sebelah kanan/depan kursor."
+            },
+            {
+                id: 12,
+                kategori: "MS Word",
+                soal: "Fitur dekoratif di MS Word untuk membuat huruf pertama dari paragraf pembuka menjadi sangat besar adalah...",
+                opsi: {
+                    A: "WordArt",
+                    B: "Drop Cap",
+                    C: "SmartArt",
+                    D: "Text Box",
+                    E: "Equation"
+                },
+                kunci: "B",
+                pembahasan: "Drop Cap menciptakan efek artistik koran/majalah klasik dengan membesarkan huruf pertama paragraf."
+            },
+            {
+                id: 13,
+                kategori: "MS Word",
+                soal: "Bagian dokumen yang terletak secara konsisten di area batas atas setiap halaman disebut...",
+                opsi: {
+                    A: "Footer",
+                    B: "Margin",
+                    C: "Watermark",
+                    D: "Header",
+                    E: "Footnote"
+                },
+                kunci: "D",
+                pembahasan: "Header berada di bagian atas halaman dokumen, sementara Footer berada di area bawah halaman."
+            },
+            {
+                id: 14,
+                kategori: "MS Word",
+                soal: "Shortcut keyboard untuk mencari kata atau frasa tertentu di dalam dokumen yang sedang aktif adalah...",
+                opsi: {
+                    A: "Ctrl + F",
+                    B: "Ctrl + H",
+                    C: "Ctrl + G",
+                    D: "Ctrl + P",
+                    E: "Ctrl + K"
+                },
+                kunci: "A",
+                pembahasan: "Ctrl + F membuka panel navigasi pencarian (Find). Ctrl + H untuk mencari sekaligus mengganti teks (Replace)."
+            },
+            {
+                id: 15,
+                kategori: "MS Word",
+                soal: "Jika ingin menyisipkan halaman baru kosong secara paksa pada posisi kursor saat ini, fitur yang dipakai adalah...",
+                opsi: {
+                    A: "Page Break",
+                    B: "Line Break",
+                    C: "Section Break",
+                    D: "Paragraph Break",
+                    E: "Hyperlink"
+                },
+                kunci: "A",
+                pembahasan: "Page Break melompati baris langsung ke halaman baru berikutnya tanpa harus menekan Enter berulang kali."
+            },
+            {
+                id: 16,
+                kategori: "MS Word",
+                soal: "Catatan penjelas tambahan yang diletakkan di bagian paling akhir dari satu halaman dokumen Word tertentu disebut...",
+                opsi: {
+                    A: "Header",
+                    B: "Footer",
+                    C: "Endnote",
+                    D: "Bibliography",
+                    E: "Footnote"
+                },
+                kunci: "E",
+                pembahasan: "Footnote (Catatan Kaki) ditempatkan di bagian bawah halaman yang sama. Sementara Endnote ditempatkan di halaman paling akhir dokumen."
+            },
+            {
+                id: 17,
+                kategori: "MS Word",
+                soal: "Fungsi dari fitur AutoCorrect pada Microsoft Word adalah...",
+                opsi: {
+                    A: "Memeriksa ejaan tata bahasa asing secara manual",
+                    B: "Mengoreksi kesalahan penulisan kata secara otomatis saat mengetik",
+                    C: "Mengubah format teks menjadi huruf miring otomatis",
+                    D: "Menyimpan dokumen secara otomatis setiap beberapa menit",
+                    E: "Menerjemahkan dokumen secara utuh ke bahasa lain"
+                },
+                kunci: "B",
+                pembahasan: "AutoCorrect secara otomatis memperbaiki kata-kata yang salah ketik (typo) berdasarkan kamus daftar kata yang tersedia."
+            },
+
+            // === MICROSOFT EXCEL (18 - 34) ===
+            {
+                id: 18,
+                kategori: "MS Excel",
+                soal: "Setiap penulisan formula, rumus, atau fungsi aritmatika pada aplikasi Microsoft Excel wajib diawali dengan tanda...",
+                opsi: {
+                    A: "+ (tambah)",
+                    B: "- (kurang)",
+                    C: "@ (at)",
+                    D: "= (sama dengan)",
+                    E: "* (bintang)"
+                },
+                kunci: "D",
+                pembahasan: "Tanda '=' memberitahu program Excel untuk memproses sel tersebut sebagai rumus kalkulasi logika, bukan sebagai teks biasa."
+            },
+            {
+                id: 19,
+                kategori: "MS Excel",
+                soal: "Fungsi statistik dasar Excel yang digunakan khusus untuk menjumlahkan seluruh nilai numerik dalam suatu jangkauan range data adalah...",
+                opsi: {
+                    A: "AVERAGE",
+                    B: "SUM",
+                    C: "COUNT",
+                    D: "MAX",
+                    E: "MIN"
+                },
+                kunci: "B",
+                pembahasan: "SUM digunakan untuk menjumlahkan angka di dalam range sel. AVERAGE untuk mencari rata-rata."
+            },
+            {
+                id: 20,
+                kategori: "MS Excel",
+                soal: "Pertemuan koordinat antara sebuah Kolom (Column) dan Baris (Row) dalam Microsoft Excel disebut dengan...",
+                opsi: {
+                    A: "Range",
+                    B: "Gridline",
+                    C: "Cell",
+                    D: "Sheet",
+                    E: "Workspace"
+                },
+                kunci: "C",
+                pembahasan: "Cell (sel) didefinisikan dengan nama kolom dan barisnya (misal: A1, B12). Kumpulan sel dinamakan Range."
+            },
+            {
+                id: 21,
+                kategori: "MS Excel",
+                soal: "Fungsi statistik yang digunakan untuk menghitung nilai rata-rata dari sekelompok data dalam suatu range adalah...",
+                opsi: {
+                    A: "SUM",
+                    B: "COUNT",
+                    C: "AVERAGE",
+                    D: "MAX",
+                    E: "MIN"
+                },
+                kunci: "C",
+                pembahasan: "Fungsi AVERAGE menghitung rata-rata aritmatika dengan menjumlahkan semua argumen lalu membaginya dengan jumlah data."
+            },
+            {
+                id: 22,
+                kategori: "MS Excel",
+                soal: "Fungsi yang digunakan untuk mencari nilai angka terkecil atau terendah di dalam sebuah kumpulan data numerik adalah...",
+                opsi: {
+                    A: "MIN",
+                    B: "MAX",
+                    C: "SMALL",
+                    D: "COUNT",
+                    E: "LOW"
+                },
+                kunci: "A",
+                pembahasan: "Fungsi MIN mengembalikan nilai numerik terkecil dalam range data, sebaliknya fungsi MAX mencari nilai tertinggi."
+            },
+            {
+                id: 23,
+                kategori: "MS Excel",
+                soal: "Untuk menghitung banyaknya sel yang terisi data numerik (angka saja) pada suatu range tertentu, kita menggunakan fungsi...",
+                opsi: {
+                    A: "COUNTA",
+                    B: "COUNT",
+                    C: "COUNTIF",
+                    D: "SUM",
+                    E: "NUMBER"
+                },
+                kunci: "B",
+                pembahasan: "COUNT menghitung sel berisi angka. COUNTA menghitung semua sel yang tidak kosong (angka maupun teks). COUNTIF menghitung berdasarkan kriteria."
+            },
+            {
+                id: 24,
+                kategori: "MS Excel",
+                soal: "Simbol operator matematika standar yang digunakan untuk operasi perkalian di lembar kerja Excel adalah...",
+                opsi: {
+                    A: "x",
+                    B: "+",
+                    C: "/",
+                    D: "*",
+                    E: "^"
+                },
+                kunci: "D",
+                pembahasan: "Tanda bintang (*) digunakan untuk perkalian, tanda garis miring (/) untuk pembagian, dan caret (^) untuk pemangkatan."
+            },
+            {
+                id: 25,
+                kategori: "MS Excel",
+                soal: "Kumpulan dari dua sel atau lebih yang dipilih bersamaan dan membentuk wilayah persegi panjang disebut...",
+                opsi: {
+                    A: "Cell Area",
+                    B: "Workbook",
+                    C: "Range",
+                    D: "Grid",
+                    E: "Merged Cell"
+                },
+                kunci: "C",
+                pembahasan: "Range didefinisikan dari koordinat sel pojok kiri atas hingga pojok kanan bawah yang dipisahkan titik dua (contoh A1:B10)."
+            },
+            {
+                id: 26,
+                kategori: "MS Excel",
+                soal: "Untuk mengunci alamat sel agar nilainya tidak berubah (tetap) saat rumus disalin (Copy) ke sel lain, digunakan simbol absolute...",
+                opsi: {
+                    A: "# (hash)",
+                    B: "$ (dollar)",
+                    C: "& (ampersand)",
+                    D: "% (persen)",
+                    E: "@ (at)"
+                },
+                kunci: "B",
+                pembahasan: "Simbol $ digunakan untuk mengunci baris, kolom, atau keduanya agar alamat sel bersifat absolut (contoh: $A$1)."
+            },
+            {
+                id: 27,
+                kategori: "MS Excel",
+                soal: "Fungsi logika dasar Excel yang digunakan untuk melakukan pengujian bersyarat atau menghasilkan keputusan berdasarkan kriteria benar/salah adalah...",
+                opsi: {
+                    A: "AND",
+                    B: "OR",
+                    C: "NOT",
+                    D: "IF",
+                    E: "VLOOKUP"
+                },
+                kunci: "D",
+                pembahasan: "Fungsi IF mengembalikan satu nilai jika kondisi bernilai TRUE dan nilai lain jika kondisi bernilai FALSE."
+            },
+            {
+                id: 28,
+                kategori: "MS Excel",
+                soal: "Fungsi pencarian yang digunakan untuk mengambil nilai data dari suatu tabel referensi secara vertikal (berdasarkan kolom) dinamakan...",
+                opsi: {
+                    A: "HLOOKUP",
+                    B: "LOOKUP",
+                    C: "VLOOKUP",
+                    D: "INDEX",
+                    E: "MATCH"
+                },
+                kunci: "C",
+                pembahasan: "VLOOKUP mencari data secara Vertikal di kolom pertama tabel acuan dan mengambil nilai di kolom yang ditentukan."
+            },
+            {
+                id: 29,
+                kategori: "MS Excel",
+                soal: "Format ekstensi file default untuk hasil lembar kerja Microsoft Excel versi terbaru sejak 2007 adalah...",
+                opsi: {
+                    A: ".xls",
+                    B: ".xlsx",
+                    C: ".csv",
+                    D: ".xlsm",
+                    E: ".docx"
+                },
+                kunci: "B",
+                pembahasan: "Format .xlsx adalah format default standar Excel XML modern tanpa makro, sedangkan .xls merupakan format versi jadul (97-2003)."
+            },
+            {
+                id: 30,
+                kategori: "MS Excel",
+                soal: "Fitur yang digunakan untuk menggabungkan beberapa sel yang bertetangga menjadi satu sel tunggal yang besar sekaligus memposisikan teks di tengah sel adalah...",
+                opsi: {
+                    A: "Wrap Text",
+                    B: "Format Painter",
+                    C: "Merge & Center",
+                    D: "Border Center",
+                    E: "Split Cell"
+                },
+                kunci: "C",
+                pembahasan: "Merge & Center menyatukan sel terpilih dan langsung menerapkan perataan teks tengah (center alignment) secara horisontal."
+            },
+            {
+                id: 31,
+                kategori: "MS Excel",
+                soal: "Jika pada suatu sel Excel menampilkan indikasi tanda eror '#####', hal ini mengindikasikan bahwa...",
+                opsi: {
+                    A: "Rumus yang dimasukkan salah ketik",
+                    B: "Lebar kolom kurang mencukupi untuk menampilkan data angka",
+                    C: "Tipe data tidak kompatibel dengan formula",
+                    D: "Ada pembagian nilai angka dengan nilai nol (0)",
+                    E: "Sel tersebut terkunci oleh sandi pelindung"
+                },
+                kunci: "B",
+                pembahasan: "Eror pagar ('#####') terjadi karena ukuran kolom sel terlalu sempit untuk memuat deret angka yang panjang. Solusinya cukup geser lebar kolom."
+            },
+            {
+                id: 32,
+                kategori: "MS Excel",
+                soal: "Fungsi pencarian data referensi yang berjalan secara mendatar atau horizontal (berdasarkan baris tabel) dinamakan...",
+                opsi: {
+                    A: "HLOOKUP",
+                    B: "VLOOKUP",
+                    C: "XLOOKUP",
+                    D: "TRANSPOSE",
+                    E: "INDEX"
+                },
+                kunci: "A",
+                pembahasan: "HLOOKUP mencari nilai di baris teratas suatu tabel referensi secara Horizontal, lalu mengembalikan nilai di baris yang ditentukan."
+            },
+            {
+                id: 33,
+                kategori: "MS Excel",
+                soal: "Fungsi matematika yang dipakai untuk membulatkan nilai angka desimal ke jumlah digit desimal tertentu di belakang koma adalah...",
+                opsi: {
+                    A: "INT",
+                    B: "TRUNC",
+                    C: "ROUND",
+                    D: "CEILING",
+                    E: "FLOOR"
+                },
+                kunci: "C",
+                pembahasan: "ROUND membulatkan angka ke jumlah digit desimal yang ditentukan di belakang koma (misal: membulatkan ke 2 desimal)."
+            },
+            {
+                id: 34,
+                kategori: "MS Excel",
+                soal: "Shortcut keyboard untuk membuat grafik (Chart) baru secara instan di lembar kerja baru dari range data terpilih adalah...",
+                opsi: {
+                    A: "F1",
+                    B: "F5",
+                    C: "F11",
+                    D: "F12",
+                    E: "Alt + C"
+                },
+                kunci: "C",
+                pembahasan: "Dengan memblok range data lalu menekan tombol F11, Excel akan membuat lembar grafik (Chart Sheet) secara otomatis dan instan."
+            },
+
+            // === MICROSOFT POWERPOINT (35 - 50) ===
+            {
+                id: 35,
+                kategori: "MS PowerPoint",
+                soal: "Lembar kerja atau halaman presentasi tunggal pada aplikasi Microsoft PowerPoint dikenal dengan sebutan...",
+                opsi: {
+                    A: "Document",
+                    B: "Sheet",
+                    C: "Slide",
+                    D: "Page",
+                    E: "Frame"
+                },
+                kunci: "C",
+                pembahasan: "Slide adalah wadah tunggal di PowerPoint untuk menaruh teks, gambar, video, dan animasi presentasi."
+            },
+            {
+                id: 36,
+                kategori: "MS PowerPoint",
+                soal: "Tombol keyboard cepat (shortcut) yang berfungsi untuk memulai presentasi (Slide Show) sejak halaman slide pertama adalah...",
+                opsi: {
+                    A: "F1",
+                    B: "F2",
+                    C: "F5",
+                    D: "Shift + F5",
+                    E: "Ctrl + F5"
+                },
+                kunci: "C",
+                pembahasan: "F5 memulai presentasi dari slide pertama (awal). Sedangkan Shift + F5 memulai dari slide yang sedang aktif/dipilih saja."
+            },
+            {
+                id: 37,
+                kategori: "MS PowerPoint",
+                soal: "Efek visual gerakan dinamis saat berganti dari satu slide ke slide berikutnya selama presentasi disebut...",
+                opsi: {
+                    A: "Animation",
+                    B: "Transition",
+                    C: "Design Layout",
+                    D: "Trigger",
+                    E: "Action Hook"
+                },
+                kunci: "B",
+                pembahasan: "Transition (Transisi) adalah animasi perpindahan antar halaman slide. Animation (Animasi) adalah efek gerak objek di dalam slide."
+            },
+            {
+                id: 38,
+                kategori: "MS PowerPoint",
+                soal: "Efek gerak artistik yang diterapkan khusus pada objek individual (seperti teks, gambar, bentuk) di dalam satu slide disebut...",
+                opsi: {
+                    A: "Transition",
+                    B: "Animation",
+                    C: "Hyperlink",
+                    D: "Slide Show",
+                    E: "Theme design"
+                },
+                kunci: "B",
+                pembahasan: "Animation memberi gerakan khusus pada objek terpilih di dalam satu slide, seperti efek masuk (Entrance), penekanan (Emphasis), atau keluar (Exit)."
+            },
+            {
+                id: 39,
+                kategori: "MS PowerPoint",
+                soal: "Format ekstensi file standar bawaan (default) saat menyimpan dokumen presentasi Microsoft PowerPoint versi 2007 ke atas adalah...",
+                opsi: {
+                    A: ".ppt",
+                    B: ".pptx",
+                    C: ".pps",
+                    D: ".pot",
+                    E: ".pdf"
+                },
+                kunci: "B",
+                pembahasan: "Format file presentasi modern PowerPoint menggunakan ekstensi .pptx yang berbasis standar terbuka Open XML."
+            },
+            {
+                id: 40,
+                kategori: "MS PowerPoint",
+                soal: "Menu tampilan yang memperlihatkan semua slide presentasi dalam bentuk thumbnail kecil di satu layar agar mudah diatur ulang urutannya adalah...",
+                opsi: {
+                    A: "Normal View",
+                    B: "Outline View",
+                    C: "Slide Sorter View",
+                    D: "Reading View",
+                    E: "Notes Page"
+                },
+                kunci: "C",
+                pembahasan: "Slide Sorter menyusun semua slide dalam bentuk ubin grid kecil sehingga mempermudah pengurutan, duplikasi, atau penghapusan slide."
+            },
+            {
+                id: 41,
+                kategori: "MS PowerPoint",
+                soal: "Shortcut keyboard yang digunakan untuk mengakhiri atau keluar seketika dari tampilan mode presentasi Slide Show adalah...",
+                opsi: {
+                    A: "Enter",
+                    B: "Spacebar",
+                    C: "Esc",
+                    D: "Alt + F4",
+                    E: "Ctrl + Q"
+                },
+                kunci: "C",
+                pembahasan: "Tombol Escape (Esc) berfungsi menghentikan presentasi layar penuh dan mengembalikan pengguna ke mode penyuntingan kerja biasa."
+            },
+            {
+                id: 42,
+                kategori: "MS PowerPoint",
+                soal: "Fitur master slide induk yang dipakai untuk merancang tata letak dasar, font, warna, dan placeholder untuk seluruh slide presentasi secara seragam adalah...",
+                opsi: {
+                    A: "Slide Master",
+                    B: "Handout Master",
+                    C: "Notes Master",
+                    D: "Template Editor",
+                    E: "Theme Designer"
+                },
+                kunci: "A",
+                pembahasan: "Slide Master adalah fitur pusat kendali desain presentasi. Setiap perubahan pada Slide Master otomatis memengaruhi seluruh slide lain."
+            },
+            {
+                id: 43,
+                kategori: "MS PowerPoint",
+                soal: "Shortcut keyboard yang tepat untuk membuat sebuah lembar slide kosong baru (New Slide) di dalam dokumen presentasi aktif adalah...",
+                opsi: {
+                    A: "Ctrl + N",
+                    B: "Ctrl + M",
+                    C: "Ctrl + S",
+                    D: "Ctrl + O",
+                    E: "Ctrl + Shift + N"
+                },
+                kunci: "B",
+                pembahasan: "Ctrl + M menyisipkan slide baru. Sedangkan Ctrl + N digunakan untuk membuat berkas presentasi baru yang benar-benar berbeda."
+            },
+            {
+                id: 44,
+                kategori: "MS PowerPoint",
+                soal: "Tab menu yang harus dikunjungi apabila pengguna ingin mengganti skema warna tema, gaya latar belakang (background), dan rasio ukuran slide adalah...",
+                opsi: {
+                    A: "Home",
+                    B: "Insert",
+                    C: "Design",
+                    D: "Transitions",
+                    E: "View"
+                },
+                kunci: "C",
+                pembahasan: "Tab Design memuat pengaturan tema bawaan (Themes), varian warna, format background, serta opsi ukuran slide (4:3 atau 16:9)."
+            },
+            {
+                id: 45,
+                kategori: "MS PowerPoint",
+                soal: "Metode mencetak materi presentasi yang memuat beberapa slide kecil sekaligus dalam satu lembar kertas agar bisa dibagikan ke audiens dinamakan...",
+                opsi: {
+                    A: "Full Page Slides",
+                    B: "Notes Pages",
+                    C: "Outline View",
+                    D: "Handouts",
+                    E: "Double Slides"
+                },
+                kunci: "D",
+                pembahasan: "Handouts mengizinkan cetak banyak slide (misal 2, 3, 4, 6, atau 9 slide) pada selembar kertas untuk catatan audiens."
+            },
+            {
+                id: 46,
+                kategori: "MS PowerPoint",
+                soal: "Wadah kotak bergaris putus-putus pada tata letak slide baru yang berfungsi menampung konten seperti judul, teks, atau gambar disebut...",
+                opsi: {
+                    A: "Text Box",
+                    B: "Placeholder",
+                    C: "Frame Card",
+                    D: "Bounding Box",
+                    E: "Smart Block"
+                },
+                kunci: "B",
+                pembahasan: "Placeholder adalah kontainer bawaan template layout yang bertugas menampung tipe-tipe data objek tertentu di slide."
+            },
+            {
+                id: 47,
+                kategori: "MS PowerPoint",
+                soal: "Shortcut keyboard untuk menyajikan Slide Show mulai dari slide aktif yang saat ini sedang kita pilih/sunting adalah...",
+                opsi: {
+                    A: "F5",
+                    B: "Shift + F5",
+                    C: "Alt + F5",
+                    D: "Ctrl + F5",
+                    E: "Spacebar"
+                },
+                kunci: "B",
+                pembahasan: "Kombinasi Shift + F5 sangat berguna untuk menguji animasi slide yang sedang dikerjakan tanpa harus melihat dari slide awal."
+            },
+            {
+                id: 48,
+                kategori: "MS PowerPoint",
+                soal: "Efek animasi pada PowerPoint dibagi menjadi beberapa kategori utama berikut ini, KECUALI...",
+                opsi: {
+                    A: "Entrance",
+                    B: "Emphasis",
+                    C: "Exit",
+                    D: "Motion Paths",
+                    E: "Transition"
+                },
+                kunci: "E",
+                pembahasan: "Transition merupakan efek antar halaman slide, sedangkan kategori animasi objek internal adalah Entrance (Masuk), Emphasis (Penekanan), Exit (Keluar), dan Motion Paths (Jalur Gerak)."
+            },
+            {
+                id: 49,
+                kategori: "MS PowerPoint",
+                soal: "Fitur yang dimanfaatkan untuk merekam suara narasi presentasi seiring dengan berjalannya perpindahan slide presentasi adalah...",
+                opsi: {
+                    A: "Record Slide Show",
+                    B: "Audio Converter",
+                    C: "Screen Recorder",
+                    D: "Voice Over Tool",
+                    E: "Audacity Hook"
+                },
+                kunci: "A",
+                pembahasan: "Record Slide Show merekam suara narasi, pointer laser, dan durasi slide untuk disimpan dan diputar kembali saat presentasi otomatis dijalankan."
+            },
+            {
+                id: 50,
+                kategori: "MS PowerPoint",
+                soal: "Shortcut keyboard yang paling cepat untuk menduplikasi secara langsung objek terpilih atau halaman slide presentasi aktif adalah...",
+                opsi: {
+                    A: "Ctrl + C",
+                    B: "Ctrl + V",
+                    C: "Ctrl + D",
+                    D: "Ctrl + M",
+                    E: "Ctrl + Y"
+                },
+                kunci: "C",
+                pembahasan: "Ctrl + D (Duplicate) menyalin sekaligus menempel objek/slide dalam sekali pencet, lebih efisien dibanding menyalin manual (Ctrl+C & Ctrl+V)."
+            }
+        ];
+
+        // --- COMPONENT APP ---
+        function App() {
+            // STATE MANAGEMENT
+            const [mode, setMode] = useState("auth"); // 'auth', 'test', 'result', 'review'
+            const [student, setStudent] = useState({ nama: "", kelas: "" });
+            const [timerMode, setTimerMode] = useState("timer_on"); // 'timer_on' (60m) or 'timer_off'
+            const [timeLeft, setTimeLeft] = useState(3600); // 60 menit dalam detik
+            const [currentQIndex, setCurrentQIndex] = useState(0);
+            const [answers, setAnswers] = useState({}); // format: { [soalId]: "A" }
+            const [flagged, setFlagged] = useState({}); // format: { [soalId]: true }
+            const [score, setScore] = useState(0);
+            const [examDuration, setExamDuration] = useState(0); // waktu terpakai
+            const [errors, setErrors] = useState({ nama: false, kelas: false });
+
+            // Timer Effect
+            useEffect(() => {
+                let interval = null;
+                if (mode === "test" && timerMode === "timer_on") {
+                    interval = setInterval(() => {
+                        setTimeLeft((prev) => {
+                            if (prev <= 1) {
+                                clearInterval(interval);
+                                finishExam();
+                                return 0;
+                            }
+                            setExamDuration((d) => d + 1);
+                            return prev - 1;
+                        });
+                    }, 1000);
+                } else if (mode === "test" && timerMode === "timer_off") {
+                    interval = setInterval(() => {
+                        setExamDuration((d) => d + 1);
+                    }, 1000);
+                }
+                return () => clearInterval(interval);
+            }, [mode, timerMode]);
+
+            // Form Submit / Mulai Ujian
+            const handleStart = (e) => {
+                e.preventDefault();
+                const errs = {
+                    nama: student.nama.trim() === "",
+                    kelas: student.kelas.trim() === ""
+                };
+                setErrors(errs);
+
+                if (!errs.nama && !errs.kelas) {
+                    setAnswers({});
+                    setFlagged({});
+                    setCurrentQIndex(0);
+                    setTimeLeft(3600);
+                    setExamDuration(0);
+                    setMode("test");
+                }
+            };
+
+            // Format Timer: HH:MM:SS atau MM:SS
+            const formatTime = (seconds) => {
+                const h = Math.floor(seconds / 3600);
+                const m = Math.floor((seconds % 3600) / 60);
+                const s = seconds % 60;
+                return `${h > 0 ? h + ':' : ''}${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            };
+
+            // Simpan Jawaban
+            const handleSelectOption = (key) => {
+                const soalId = SOAL_DATABASE[currentQIndex].id;
+                setAnswers(prev => ({
+                    ...prev,
+                    [soalId]: key
+                }));
+            };
+
+            // Toggle Ragu-ragu (Flag)
+            const toggleFlag = () => {
+                const soalId = SOAL_DATABASE[currentQIndex].id;
+                setFlagged(prev => ({
+                    ...prev,
+                    [soalId]: !prev[soalId]
+                }));
+            };
+
+            // Selesai Ujian
+            const finishExam = () => {
+                // Kalkulasi Nilai
+                let correctCount = 0;
+                SOAL_DATABASE.forEach(item => {
+                    if (answers[item.id] === item.kunci) {
+                        correctCount++;
+                    }
+                });
+                const finalScore = Math.round((correctCount / SOAL_DATABASE.length) * 100);
+                setScore(finalScore);
+                setMode("result");
+            };
+
+            // Dapatkan Statistik Kategori
+            const getCategoryStats = () => {
+                const stats = {
+                    "MS Word": { total: 0, correct: 0 },
+                    "MS Excel": { total: 0, correct: 0 },
+                    "MS PowerPoint": { total: 0, correct: 0 }
+                };
+
+                SOAL_DATABASE.forEach(item => {
+                    const cat = item.kategori;
+                    stats[cat].total++;
+                    if (answers[item.id] === item.kunci) {
+                        stats[cat].correct++;
+                    }
+                });
+
+                return stats;
+            };
+
+            // Reset Ujian Baru
+            const resetExam = () => {
+                setStudent({ nama: "", kelas: "" });
+                setMode("auth");
+            };
+
+            const stats = getCategoryStats();
+            const answeredCount = Object.keys(answers).length;
+
+            return (
+                <div class="flex-grow flex flex-col">
+                    {/* TOP DECORATIVE HEADER */}
+                    <header class="bg-blue-600 text-white shadow-lg py-4 px-6 flex justify-between items-center no-print">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-white p-2 rounded-lg text-blue-600 flex items-center justify-center">
+                                <i class="fa-solid fa-graduation-cap text-2xl"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-xl font-bold tracking-tight">Portal CBT</h1>
+                                <p class="text-xs text-blue-100 font-medium">Ujian Produktif Aplikasi Perkantoran</p>
+                            </div>
+                        </div>
+                        {mode === "test" && (
+                            <div class="flex items-center gap-4 bg-blue-700 py-1.5 px-4 rounded-full text-sm font-semibold border border-blue-500">
+                                <span class="flex items-center gap-2">
+                                    <i class="fa-regular fa-clock text-base animate-pulse text-amber-300"></i>
+                                    {timerMode === "timer_on" ? "SISA WAKTU:" : "WAKTU BERJALAN:"}
+                                </span>
+                                <span class="text-amber-300 text-lg font-mono tracking-wider">
+                                    {timerMode === "timer_on" ? formatTime(timeLeft) : formatTime(examDuration)}
+                                </span>
+                            </div>
+                        )}
+                    </header>
+
+                    {/* ================= STAGE 1: AUTHENTICATION FORM ================= */}
+                    {mode === "auth" && (
+                        <div class="flex-grow flex items-center justify-center p-6 bg-slate-100">
+                            <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-lg border border-slate-200">
+                                <div class="text-center mb-8">
+                                    <span class="inline-block bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full mb-3 uppercase tracking-wider">Registrasi Ujian</span>
+                                    <h2 class="text-2xl font-bold text-slate-800">Ujian Online MS Office</h2>
+                                    <p class="text-slate-500 text-sm mt-1">Isi identitas diri di bawah ini dengan benar untuk memulai ujian.</p>
+                                </div>
+
+                                <form onSubmit={handleStart} class="space-y-6">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-slate-700 mb-2">
+                                            <i class="fa-regular fa-user mr-2 text-blue-500"></i>Nama Lengkap
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            placeholder="Masukkan Nama Lengkap Anda" 
+                                            value={student.nama}
+                                            onChange={(e) => setStudent({...student, nama: e.target.value})}
+                                            class={`w-full px-4 py-3 rounded-xl border ${errors.nama ? 'border-red-500 ring-2 ring-red-100' : 'border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100'} outline-none transition duration-200 font-medium`}
+                                        />
+                                        {errors.nama && <span class="text-xs text-red-500 mt-1 font-medium block">Nama lengkap wajib diisi!</span>}
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-semibold text-slate-700 mb-2">
+                                            <i class="fa-solid fa-hotel mr-2 text-blue-500"></i>Kelas / Rombel
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            placeholder="Contoh: X - RPL 1 atau XII - IPS 3" 
+                                            value={student.kelas}
+                                            onChange={(e) => setStudent({...student, kelas: e.target.value})}
+                                            class={`w-full px-4 py-3 rounded-xl border ${errors.kelas ? 'border-red-500 ring-2 ring-red-100' : 'border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100'} outline-none transition duration-200 font-medium`}
+                                        />
+                                        {errors.kelas && <span class="text-xs text-red-500 mt-1 font-medium block">Kelas wajib diisi!</span>}
+                                    </div>
+
+                                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-3">
+                                        <span class="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Pengaturan Timer</span>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <button 
+                                                type="button"
+                                                onClick={() => setTimerMode("timer_on")}
+                                                class={`py-2.5 px-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 border transition ${timerMode === "timer_on" ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'}`}
+                                            >
+                                                <i class="fa-solid fa-hourglass-start"></i>60 Menit
+                                            </button>
+                                            <button 
+                                                type="button"
+                                                onClick={() => setTimerMode("timer_off")}
+                                                class={`py-2.5 px-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 border transition ${timerMode === "timer_off" ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'}`}
+                                            >
+                                                <i class="fa-solid fa-infinity"></i>Santai (No Timer)
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 flex gap-3 text-amber-800 text-xs leading-relaxed">
+                                        <i class="fa-solid fa-circle-info text-base mt-0.5 text-amber-600 shrink-0"></i>
+                                        <div>
+                                            <strong class="font-semibold block mb-0.5">Informasi Ujian:</strong>
+                                            Ujian ini terdiri dari 50 soal pilihan ganda (A, B, C, D, E) mencakup materi dasar MS Word, MS Excel, dan MS PowerPoint. Pastikan koneksi internet stabil sebelum menekan tombol mulai.
+                                        </div>
+                                    </div>
+
+                                    <button 
+                                        type="submit" 
+                                        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold transition shadow-lg hover:shadow-blue-200 text-center block focus:ring-4 focus:ring-blue-200"
+                                    >
+                                        Mulai Ujian Sekarang <i class="fa-solid fa-arrow-right ml-2"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ================= STAGE 2: TEST INTERFACE ================= */}
+                    {mode === "test" && (
+                        <div class="flex-grow grid grid-cols-1 lg:grid-cols-4 gap-6 p-6 bg-slate-100 no-print">
+                            {/* Left Area: Main Question Panel */}
+                            <div class="lg:col-span-3 flex flex-col gap-6">
+                                {/* Student Info Bar */}
+                                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap gap-4 items-center justify-between">
+                                    <div class="flex items-center gap-4">
+                                        <div class="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-bold">
+                                            {student.nama.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div>
+                                            <h3 class="font-bold text-slate-800">{student.nama}</h3>
+                                            <p class="text-xs text-slate-500">Kelas: <span class="font-semibold text-slate-700">{student.kelas}</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                                            Soal ke <strong class="text-slate-800">{currentQIndex + 1}</strong> dari <strong class="text-slate-800">50</strong>
+                                        </span>
+                                        <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200">
+                                            Terjawab: <strong class="text-emerald-800">{answeredCount}</strong>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Active Question Card */}
+                                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 flex-grow flex flex-col justify-between min-h-[450px]">
+                                    <div>
+                                        {/* Tag Kategori Soal */}
+                                        <div class="flex justify-between items-center mb-6">
+                                            <span class={`px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase ${
+                                                SOAL_DATABASE[currentQIndex].kategori === 'MS Word' ? 'bg-blue-100 text-blue-700' :
+                                                SOAL_DATABASE[currentQIndex].kategori === 'MS Excel' ? 'bg-emerald-100 text-emerald-700' :
+                                                'bg-rose-100 text-rose-700'
+                                            }`}>
+                                                <i class={`mr-1.5 ${
+                                                    SOAL_DATABASE[currentQIndex].kategori === 'MS Word' ? 'fa-regular fa-file-word' :
+                                                    SOAL_DATABASE[currentQIndex].kategori === 'MS Excel' ? 'fa-regular fa-file-excel' :
+                                                    'fa-regular fa-file-powerpoint'
+                                                }`}></i>
+                                                {SOAL_DATABASE[currentQIndex].kategori}
+                                            </span>
+                                            {flagged[SOAL_DATABASE[currentQIndex].id] && (
+                                                <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                                                    <i class="fa-solid fa-flag"></i> Ragu-ragu
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        {/* Soal Text */}
+                                        <h2 class="text-lg md:text-xl font-semibold text-slate-800 leading-relaxed mb-8">
+                                            {SOAL_DATABASE[currentQIndex].soal}
+                                        </h2>
+
+                                        {/* Pilihan Ganda (A, B, C, D, E) */}
+                                        <div class="space-y-4">
+                                            {Object.entries(SOAL_DATABASE[currentQIndex].opsi).map(([key, value]) => {
+                                                const isSelected = answers[SOAL_DATABASE[currentQIndex].id] === key;
+                                                return (
+                                                    <button
+                                                        key={key}
+                                                        onClick={() => handleSelectOption(key)}
+                                                        class={`w-full text-left p-4 rounded-xl border flex items-center gap-4 transition duration-150 ${
+                                                            isSelected 
+                                                            ? 'border-blue-600 bg-blue-50 text-blue-900 font-medium ring-2 ring-blue-100' 
+                                                            : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700'
+                                                        }`}
+                                                    >
+                                                        <span class={`h-8 w-8 rounded-lg flex items-center justify-center font-bold border shrink-0 transition ${
+                                                            isSelected
+                                                            ? 'bg-blue-600 text-white border-blue-600'
+                                                            : 'bg-white text-slate-500 border-slate-300'
+                                                        }`}>
+                                                            {key}
+                                                        </span>
+                                                        <span class="text-sm md:text-base leading-snug">{value}</span>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+
+                                    {/* Action Buttons */}
+                                    <div class="mt-8 pt-6 border-t border-slate-100 flex flex-wrap gap-3 justify-between items-center">
+                                        <div class="flex gap-3">
+                                            <button 
+                                                onClick={() => setCurrentQIndex(prev => Math.max(0, prev - 1))}
+                                                disabled={currentQIndex === 0}
+                                                class="px-5 py-3 rounded-xl border border-slate-300 hover:bg-slate-50 font-semibold text-slate-700 disabled:opacity-40 disabled:hover:bg-transparent transition text-sm flex items-center gap-2"
+                                            >
+                                                <i class="fa-solid fa-chevron-left text-xs"></i> Sebelumnya
+                                            </button>
+                                            
+                                            <button 
+                                                onClick={toggleFlag}
+                                                class={`px-5 py-3 rounded-xl font-semibold transition text-sm flex items-center gap-2 border ${
+                                                    flagged[SOAL_DATABASE[currentQIndex].id]
+                                                    ? 'bg-amber-600 text-white border-amber-600 hover:bg-amber-700'
+                                                    : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
+                                                }`}
+                                            >
+                                                <i class="fa-solid fa-flag text-xs"></i> Ragu-Ragu
+                                            </button>
+                                        </div>
+
+                                        {currentQIndex < SOAL_DATABASE.length - 1 ? (
+                                            <button 
+                                                onClick={() => setCurrentQIndex(prev => prev + 1)}
+                                                class="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition text-sm flex items-center gap-2 shadow-md hover:shadow-blue-100"
+                                            >
+                                                Selanjutnya <i class="fa-solid fa-chevron-right text-xs"></i>
+                                            </button>
+                                        ) : (
+                                            <button 
+                                                onClick={finishExam}
+                                                class="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition text-sm flex items-center gap-2 shadow-md hover:shadow-emerald-100"
+                                            >
+                                                Selesai Ujian <i class="fa-solid fa-circle-check text-sm"></i>
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Right Area: Navigation Grid (50 Questions) */}
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between h-fit lg:sticky lg:top-6">
+                                <div>
+                                    <h3 class="font-bold text-slate-800 text-base mb-2 flex items-center justify-between">
+                                        <span>Navigasi Soal</span>
+                                        <span class="text-xs bg-slate-100 px-2.5 py-1 rounded-full text-slate-600 font-medium">{answeredCount}/50 Terjawab</span>
+                                    </h3>
+                                    <p class="text-xs text-slate-500 mb-4">Klik nomor untuk melompati halaman soal secara instan.</p>
+
+                                    {/* Grid Layout */}
+                                    <div class="grid grid-cols-5 gap-2 max-h-[360px] overflow-y-auto pr-1">
+                                        {SOAL_DATABASE.map((item, index) => {
+                                            const isCurrent = currentQIndex === index;
+                                            const isAnswered = answers[item.id] !== undefined;
+                                            const isFlagged = flagged[item.id];
+
+                                            let btnClass = "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100";
+                                            if (isAnswered) btnClass = "bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700";
+                                            if (isFlagged) btnClass = "bg-amber-500 text-white border-amber-500 hover:bg-amber-600";
+                                            if (isCurrent) btnClass = "bg-blue-600 text-white border-blue-600 ring-4 ring-blue-100";
+
+                                            return (
+                                                <button
+                                                    key={item.id}
+                                                    onClick={() => setCurrentQIndex(index)}
+                                                    class={`h-10 w-full rounded-lg border font-bold text-xs flex items-center justify-center transition ${btnClass}`}
+                                                >
+                                                    {index + 1}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                {/* Legend Status */}
+                                <div class="mt-6 pt-6 border-t border-slate-100 space-y-2.5">
+                                    <span class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">Keterangan Warna</span>
+                                    <div class="grid grid-cols-2 gap-2 text-xs">
+                                        <div class="flex items-center gap-2 text-slate-600">
+                                            <span class="h-3 w-3 bg-slate-100 border border-slate-300 rounded block"></span> Belum Isi
+                                        </div>
+                                        <div class="flex items-center gap-2 text-slate-600">
+                                            <span class="h-3 w-3 bg-emerald-600 rounded block"></span> Terjawab
+                                        </div>
+                                        <div class="flex items-center gap-2 text-slate-600">
+                                            <span class="h-3 w-3 bg-amber-500 rounded block"></span> Ragu-ragu
+                                        </div>
+                                        <div class="flex items-center gap-2 text-slate-600">
+                                            <span class="h-3 w-3 bg-blue-600 rounded block"></span> Sedang Aktif
+                                        </div>
+                                    </div>
+
+                                    {/* Selesai Ujian Button di Sidebar */}
+                                    <button 
+                                        onClick={finishExam}
+                                        class="w-full mt-4 bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 font-bold py-3 rounded-xl transition text-xs flex items-center justify-center gap-2 shadow-sm"
+                                    >
+                                        <i class="fa-solid fa-power-off text-xs"></i> Hentikan & Kirim Jawaban
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ================= STAGE 3: RESULTS PANEL ================= */}
+                    {mode === "result" && (
+                        <div class="flex-grow p-6 bg-slate-100">
+                            <div class="max-w-4xl mx-auto space-y-6">
+                                {/* Result Summary Header */}
+                                <div class="bg-white p-8 rounded-2xl shadow-md border border-slate-200 text-center relative overflow-hidden">
+                                    {/* Background decorative vector */}
+                                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-50 rounded-full -z-10 opacity-60"></div>
+                                    <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-indigo-50 rounded-full -z-10 opacity-60"></div>
+
+                                    <span class="inline-block bg-emerald-100 text-emerald-800 text-xs font-extrabold px-3 py-1 rounded-full mb-4 uppercase tracking-wider">
+                                        <i class="fa-solid fa-square-poll-vertical mr-1"></i> Hasil Evaluasi
+                                    </span>
+                                    
+                                    <h2 class="text-3xl font-extrabold text-slate-800">Ujian Telah Selesai</h2>
+                                    <p class="text-slate-500 text-sm mt-1 mb-6">Berikut adalah rangkuman nilai pencapaian uji kompetensi MS Office Anda.</p>
+
+                                    {/* Score Circle */}
+                                    <div class="inline-flex flex-col items-center justify-center h-40 w-40 rounded-full bg-slate-50 border-8 border-blue-600 shadow-inner mb-6">
+                                        <span class="text-5xl font-extrabold text-slate-800 tracking-tight">{score}</span>
+                                        <span class="text-xs text-slate-400 font-bold tracking-wider uppercase mt-1">NILAI AKHIR</span>
+                                    </div>
+
+                                    {/* Student Identity Meta */}
+                                    <div class="max-w-md mx-auto grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 text-left text-sm mb-6">
+                                        <div>
+                                            <span class="text-xs text-slate-400 font-medium uppercase block">Nama Peserta</span>
+                                            <span class="font-bold text-slate-800">{student.nama}</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-xs text-slate-400 font-medium uppercase block">Kelas / Rombel</span>
+                                            <span class="font-bold text-slate-800">{student.kelas}</span>
+                                        </div>
+                                        <div class="col-span-2 pt-2 border-t border-slate-200 flex justify-between text-xs text-slate-500 font-medium">
+                                            <span>Waktu Penyelesaian: <strong class="text-slate-800">{formatTime(examDuration)}</strong></span>
+                                            <span>Predikat: <strong class="text-blue-600">{score >= 75 ? "LULUS / KOMPETEN" : "REMIDIAL / BELUM KOMPETEN"}</strong></span>
+                                        </div>
+                                    </div>
+
+                                    {/* Print Button & Try Again */}
+                                    <div class="flex justify-center gap-3 no-print">
+                                        <button 
+                                            onClick={() => window.print()}
+                                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl transition flex items-center gap-2 shadow-md"
+                                        >
+                                            <i class="fa-solid fa-print"></i> Cetak Hasil Ujian
+                                        </button>
+                                        <button 
+                                            onClick={() => setMode("review")}
+                                            class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-xl transition flex items-center gap-2 shadow-md"
+                                        >
+                                            <i class="fa-solid fa-list-check"></i> Ulas Jawaban
+                                        </button>
+                                        <button 
+                                            onClick={resetExam}
+                                            class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-semibold px-6 py-3 rounded-xl transition"
+                                        >
+                                            Ulangi Dari Awal
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Category Performance Bars */}
+                                <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200">
+                                    <h3 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
+                                        <i class="fa-solid fa-chart-line text-blue-600"></i> Analisis Kemampuan Per Modul
+                                    </h3>
+                                    <div class="space-y-6">
+                                        {Object.entries(stats).map(([category, data]) => {
+                                            const percent = Math.round((data.correct / data.total) * 100) || 0;
+                                            
+                                            // Color schemes
+                                            let barColor = "bg-blue-500";
+                                            let icon = "fa-regular fa-file-word text-blue-500";
+                                            if (category === "MS Excel") {
+                                                barColor = "bg-emerald-500";
+                                                icon = "fa-regular fa-file-excel text-emerald-500";
+                                            } else if (category === "MS PowerPoint") {
+                                                barColor = "bg-rose-500";
+                                                icon = "fa-regular fa-file-powerpoint text-rose-500";
+                                            }
+
+                                            return (
+                                                <div key={category} class="space-y-2">
+                                                    <div class="flex justify-between items-center text-sm font-semibold">
+                                                        <span class="flex items-center gap-2 text-slate-700">
+                                                            <i class={icon}></i> {category}
+                                                        </span>
+                                                        <span class="text-slate-500">
+                                                            {data.correct} / {data.total} Benar ({percent}%)
+                                                        </span>
+                                                    </div>
+                                                    <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+                                                        <div class={`h-full ${barColor} rounded-full transition-all duration-1000`} style={{ width: `${percent}%` }}></div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                {/* Clean Print Area (Hanya Muncul saat cetak menggunakan window.print()) */}
+                                <div class="hidden print-only p-8 bg-white text-black border border-black max-w-4xl mx-auto space-y-6">
+                                    <div class="text-center border-b-2 border-black pb-4">
+                                        <h1 class="text-2xl font-extrabold uppercase">Laporan Hasil Evaluasi Uji Kompetensi</h1>
+                                        <h2 class="text-lg font-bold">Mata Pelajaran Teknologi Perkantoran (MS Office)</h2>
+                                    </div>
+                                    <table class="w-full text-sm border-collapse my-6">
+                                        <tbody>
+                                            <tr>
+                                                <td class="font-bold py-2 w-1/3">Nama Lengkap Peserta</td>
+                                                <td class="py-2">: {student.nama}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-bold py-2">Kelas / Rombel</td>
+                                                <td class="py-2">: {student.kelas}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-bold py-2">Waktu Pengerjaan</td>
+                                                <td class="py-2">: {formatTime(examDuration)}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-bold py-2">Nilai Akhir (Skala 100)</td>
+                                                <td class="py-2">: <span class="text-xl font-bold">{score}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-bold py-2">Status Penilaian</td>
+                                                <td class="py-2">: <span class="font-bold">{score >= 75 ? "LULUS / KOMPETEN" : "BELUM KOMPETEN"}</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <div class="border-t border-slate-300 pt-6">
+                                        <h3 class="font-bold mb-3">Detail Analisis Materi:</h3>
+                                        {Object.entries(stats).map(([category, data]) => (
+                                            <div key={category} class="flex justify-between py-1.5 border-b border-slate-100 text-sm">
+                                                <span>{category}</span>
+                                                <span class="font-semibold">{data.correct} Benar dari {data.total} Soal ({Math.round((data.correct / data.total) * 100) || 0}%)</span>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div class="flex justify-between pt-16 text-center text-sm">
+                                        <div>
+                                            <p class="mb-14">Guru Pengampu,</p>
+                                            <p class="font-bold underline">......................................</p>
+                                        </div>
+                                        <div>
+                                            <p class="mb-14">Siswa Peserta Ujian,</p>
+                                            <p class="font-bold underline">{student.nama}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ================= STAGE 4: DETAILED ANSWER REVIEW ================= */}
+                    {mode === "review" && (
+                        <div class="flex-grow p-6 bg-slate-100 no-print">
+                            <div class="max-w-4xl mx-auto space-y-6">
+                                {/* Navigation and back to dashboard */}
+                                <div class="flex items-center justify-between">
+                                    <button 
+                                        onClick={() => setMode("result")}
+                                        class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-semibold px-4 py-2.5 rounded-xl transition text-sm flex items-center gap-2"
+                                    >
+                                        <i class="fa-solid fa-arrow-left"></i> Kembali ke Hasil Nilai
+                                    </button>
+                                    <span class="text-sm font-bold text-slate-600">Ulasan Jawaban ({answeredCount}/50)</span>
+                                </div>
+
+                                {/* Review List Cards */}
+                                <div class="space-y-6">
+                                    {SOAL_DATABASE.map((item, index) => {
+                                        const userAnswer = answers[item.id];
+                                        const isCorrect = userAnswer === item.kunci;
+
+                                        return (
+                                            <div key={item.id} class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                                                {/* Header info */}
+                                                <div class="flex justify-between items-start gap-4 mb-4">
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="h-6 w-6 bg-slate-100 text-slate-700 text-xs font-bold rounded flex items-center justify-center">
+                                                            {index + 1}
+                                                        </span>
+                                                        <span class={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase ${
+                                                            item.kategori === 'MS Word' ? 'bg-blue-100 text-blue-700' :
+                                                            item.kategori === 'MS Excel' ? 'bg-emerald-100 text-emerald-700' :
+                                                            'bg-rose-100 text-rose-700'
+                                                        }`}>
+                                                            {item.kategori}
+                                                        </span>
+                                                    </div>
+                                                    
+                                                    {userAnswer === undefined ? (
+                                                        <span class="text-xs bg-amber-100 text-amber-800 px-3 py-1 rounded-full font-bold">
+                                                            <i class="fa-solid fa-circle-exclamation mr-1"></i> Tidak Dijawab
+                                                        </span>
+                                                    ) : isCorrect ? (
+                                                        <span class="text-xs bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold">
+                                                            <i class="fa-solid fa-circle-check mr-1"></i> Benar
+                                                        </span>
+                                                    ) : (
+                                                        <span class="text-xs bg-red-100 text-red-800 px-3 py-1 rounded-full font-bold">
+                                                            <i class="fa-solid fa-circle-xmark mr-1"></i> Salah
+                                                        </span>
+                                                    )}
+                                                </div>
+
+                                                {/* Question Text */}
+                                                <h4 class="font-semibold text-slate-800 leading-relaxed mb-4">{item.soal}</h4>
+
+                                                {/* Show options with color feedback */}
+                                                <div class="space-y-2 mb-4">
+                                                    {Object.entries(item.opsi).map(([key, value]) => {
+                                                        const isKunci = item.kunci === key;
+                                                        const isUser = userAnswer === key;
+
+                                                        let optionStyle = "border-slate-100 text-slate-700 bg-slate-50/50";
+                                                        if (isKunci) optionStyle = "border-emerald-500 bg-emerald-50 text-emerald-900 font-semibold ring-1 ring-emerald-500";
+                                                        if (isUser && !isCorrect) optionStyle = "border-red-400 bg-red-50 text-red-900";
+
+                                                        return (
+                                                            <div key={key} class={`p-3 rounded-lg border text-xs md:text-sm flex items-center gap-3 ${optionStyle}`}>
+                                                                <span class={`h-6 w-6 rounded flex items-center justify-center font-bold text-xs shrink-0 ${
+                                                                    isKunci ? 'bg-emerald-600 text-white' :
+                                                                    isUser && !isCorrect ? 'bg-red-500 text-white' :
+                                                                    'bg-slate-200 text-slate-600'
+                                                                }`}>
+                                                                    {key}
+                                                                </span>
+                                                                <span>{value}</span>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+
+                                                {/* Pembahasan / Rationale */}
+                                                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 text-xs md:text-sm text-blue-800 leading-relaxed">
+                                                    <strong class="font-bold block mb-1">
+                                                        <i class="fa-solid fa-lightbulb text-amber-500 mr-1.5 animate-pulse"></i> Pembahasan:
+                                                    </strong>
+                                                    {item.pembahasan}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                <div class="text-center pt-4">
+                                    <button 
+                                        onClick={() => setMode("result")}
+                                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl shadow-md"
+                                    >
+                                        Kembali ke Hasil Nilai
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* FOOTER */}
+                    <footer class="bg-slate-900 text-slate-400 py-6 text-center text-xs mt-auto border-t border-slate-800 no-print">
+                        <p>© 2026 Portal CBT Ujian Online MS Office. All Rights Reserved.</p>
+                        <p class="mt-1 text-slate-600">Dikembangkan untuk Evaluasi Belajar Mandiri Interaktif.</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        // RENDER APPLICATION
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
